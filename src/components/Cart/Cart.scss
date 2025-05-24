@@ -1,0 +1,34 @@
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 0;
+
+  .cart-item-image {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+  }
+
+  .cart-item-info {
+    flex: 1;
+    margin-left: 0.75rem;
+
+    .cart-item-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+.cart-total-section {
+  margin-top: 1rem;
+  text-align: right;
+
+  .cart-total {
+    font-weight: 700;
+    font-size: 1.25rem;
+  }
+}

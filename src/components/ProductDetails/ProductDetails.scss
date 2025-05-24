@@ -1,0 +1,22 @@
+.product-details {
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .brand, .sku, .color {
+    font-size: 1.125rem;
+    margin-bottom: 0.25rem;
+  }
+  .price-full {
+    font-size: 1.25rem;
+    text-decoration: line-through;
+    color: #888;
+    margin-top: 1rem;
+  }
+  .price-discount {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #dc2626; /* rojo */
+  }
+}
