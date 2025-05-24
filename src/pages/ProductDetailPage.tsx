@@ -35,74 +35,107 @@ interface CartItem {
 const ProductDetailPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const navigate = useNavigate();
+
+  const [allProducts, setAllProducts] = useState<RawProduct[]>([]);
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
 
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
-    if (!productId) return;
-    setProduct(null);
-    setLoading(true);
-    fetchProduct(productId)
-      .then((data: RawProduct) => {
-        console.log(data);
-        if (!data) throw new Error('Producto no encontrado');
-        const firstItem = data.items && data.items.length > 0 ? data.items[0] : null;
-        const firstSeller = firstItem && firstItem.sellers && firstItem.sellers.length > 0 ? firstItem.sellers[0] : null;
-        const mappedProduct: Product = {
-          id: data.productId,
-          title: data.productName || data.productTitle || '',
-          brand: data.brand || '',
-          sku: data.productReferenceCode || '',
-          images: firstItem ? firstItem.images.map(img => img.imageUrl) : [],
-          color: firstItem && firstItem.Color ? firstItem.Color[0] : '',
-          priceFull: firstSeller ? firstSeller.commertialOffer.ListPrice : 0,
-          priceDiscount: firstSeller ? firstSeller.commertialOffer.Price : 0,
-          availableSizes: firstItem && firstItem.Talla ? firstItem.Talla : []
-        };
-
-        setProduct(mappedProduct);
-
-        if (mappedProduct.availableSizes.length > 0) setSelectedSize(mappedProduct.availableSizes[0]);
+    fetchProducts(20)
+      .then((products) => {
+        setAllProducts(products);
       })
       .catch((e) => {
-        console.error('Error al cargar el producto:', e);
-        alert('Error al cargar el producto');
-      })
-      .finally(() => setLoading(false));
-  }, [productId]);
+        console.error('Error cargando productos:', e);
+      });
+  }, []);
 
   useEffect(() => {
     if (!productId) return;
-    fetchProducts(5)
-      .then((productsRaw: RawProduct[]) => {
-        const filtered = productsRaw.filter(p => p.productId !== productId);
-        const mapped = filtered.map(data => {
+    setLoading(true);
+    setProduct(null);
+
+    const foundRaw = allProducts.find(p => p.productId === productId);
+
+    if (foundRaw) {
+      const firstItem = foundRaw.items && foundRaw.items.length > 0 ? foundRaw.items[0] : null;
+      const firstSeller = firstItem && firstItem.sellers && firstItem.sellers.length > 0 ? firstItem.sellers[0] : null;
+
+      const mappedProduct: Product = {
+        id: foundRaw.productId,
+        title: foundRaw.productName || foundRaw.productTitle || '',
+        brand: foundRaw.brand || '',
+        sku: foundRaw.productReferenceCode || '',
+        images: firstItem ? firstItem.images.map(img => img.imageUrl) : [],
+        color: firstItem && firstItem.Color ? firstItem.Color[0] : '',
+        priceFull: firstSeller ? firstSeller.commertialOffer.ListPrice : 0,
+        priceDiscount: firstSeller ? firstSeller.commertialOffer.Price : 0,
+        availableSizes: firstItem && firstItem.Talla ? firstItem.Talla : []
+      };
+
+      setProduct(mappedProduct);
+      if (mappedProduct.availableSizes.length > 0) setSelectedSize(mappedProduct.availableSizes[0]);
+      setLoading(false);
+    } else {
+      fetchProduct(productId)
+        .then((data: RawProduct) => {
           const firstItem = data.items && data.items.length > 0 ? data.items[0] : null;
           const firstSeller = firstItem && firstItem.sellers && firstItem.sellers.length > 0 ? firstItem.sellers[0] : null;
-          return {
+
+          const mappedProduct: Product = {
             id: data.productId,
             title: data.productName || data.productTitle || '',
             brand: data.brand || '',
-            sku: data.productReferenceCode || '',  // sku correcto, no marca
+            sku: data.productReferenceCode || '',
             images: firstItem ? firstItem.images.map(img => img.imageUrl) : [],
             color: firstItem && firstItem.Color ? firstItem.Color[0] : '',
             priceFull: firstSeller ? firstSeller.commertialOffer.ListPrice : 0,
             priceDiscount: firstSeller ? firstSeller.commertialOffer.Price : 0,
             availableSizes: firstItem && firstItem.Talla ? firstItem.Talla : []
-          } as Product;
-        });
-        setRelatedProducts(mapped);
-      })
-      .catch(e => {
-        console.error('Error al cargar productos relacionados:', e);
-      });
-  }, [productId]);
+          };
+
+          setProduct(mappedProduct);
+          if (mappedProduct.availableSizes.length > 0) setSelectedSize(mappedProduct.availableSizes[0]);
+        })
+        .catch((e) => {
+          console.error('Error al cargar el producto:', e);
+          alert('Error al cargar el producto');
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [productId, allProducts]);
+
+  useEffect(() => {
+    if (!allProducts.length || !productId) {
+      setRelatedProducts([]);
+      return;
+    }
+
+    const filtered = allProducts.filter(p => p.productId !== productId);
+    const mapped = filtered.map(data => {
+      const firstItem = data.items && data.items.length > 0 ? data.items[0] : null;
+      const firstSeller = firstItem && firstItem.sellers && firstItem.sellers.length > 0 ? firstItem.sellers[0] : null;
+
+      return {
+        id: data.productId,
+        title: data.productName || data.productTitle || '',
+        brand: data.brand || '',
+        sku: data.productReferenceCode || '',
+        images: firstItem ? firstItem.images.map(img => img.imageUrl) : [],
+        color: firstItem && firstItem.Color ? firstItem.Color[0] : '',
+        priceFull: firstSeller ? firstSeller.commertialOffer.ListPrice : 0,
+        priceDiscount: firstSeller ? firstSeller.commertialOffer.Price : 0,
+        availableSizes: firstItem && firstItem.Talla ? firstItem.Talla : []
+      } as Product;
+    });
+    setRelatedProducts(mapped);
+  }, [allProducts, productId]);
 
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
@@ -134,24 +167,28 @@ const ProductDetailPage: React.FC = () => {
     const newCart = [...cart];
     newCart.splice(index, 1);
     setCart(newCart);
-  };
+  }
 
   const handleSelectRelatedProduct = (id: string) => {
     navigate(`/product/${id}`);
-  };
+  }
+
+  const loadingApp = () => {
+    return (
+      <div className="loading-modal">
+        <ProgressSpinner />
+        <p>Cargando producto...</p>
+      </div>
+    );
+  }
 
   return (
     <>
       <Toast ref={toast} />
       <Navbar cartCount={cart.length} onCartClick={() => setShowCart(true)} />
-      {loading && (
-        <div className="loading-modal">
-          <ProgressSpinner />
-          <p>Cargando producto...</p>
-        </div>
-      )}
+      {isLoading && loadingApp()}
 
-      {!loading && product && (
+      {!isLoading && product && (
         <div className="container">
           <div className="product-detail-layout">
             <div className="product-images-section">
@@ -167,15 +204,14 @@ const ProductDetailPage: React.FC = () => {
                 priceDiscount={product.priceDiscount}
               />
               <SizeSelector sizes={product.availableSizes} selectedSize={selectedSize} onSelectSize={setSelectedSize} />
-                <div className="action-buttons">
-                  <AddToCartButton onAdd={addToCart} />
-                  <button className="p-button p-button-secondary ml-2" onClick={() => setShowCart(true)}>
-                    Ver Carrito ({cart.length})
-                  </button>
-                </div>
+              <div className="action-buttons">
+                <AddToCartButton onAdd={addToCart} />
+                {/* <button className="p-button p-button-secondary ml-2" onClick={() => setShowCart(true)}>
+                  Ver Carrito ({cart.length})
+                </button> */}
+              </div>
             </div>
           </div>
-
           <RelatedProducts products={relatedProducts} onSelectProduct={handleSelectRelatedProduct} />
 
           <Cart visible={showCart} onHide={() => setShowCart(false)} cart={cart} removeItem={removeFromCart} />
