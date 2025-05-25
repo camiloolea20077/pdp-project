@@ -1,0 +1,159 @@
+.home-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.products-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    padding: 0.5rem 1rem;
+
+    h2 {
+        margin: 0;
+        font-weight: 700;
+    }
+
+    button.p-button {
+        position: relative;
+    }
+}
+
+.action-buttons {
+    height: 60px;
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    button,
+    .p-button {
+        flex: 1;
+    }
+}
+
+
+.product-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.05);
+    }
+
+    .product-image {
+        width: 100%;
+        height: auto;
+    }
+
+    h2 {
+        font-size: 18px;
+        margin-top: 10px;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+}
+
+.hero-section {
+    background-image: url('https://st.depositphotos.com/1016440/2534/i/450/depositphotos_25344733-stock-photo-sunrise-at-the-beach.jpg');
+    /* Cambia esto a la URL de tu imagen de fondo */
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 100px 0;
+    text-align: center;
+
+    .hero-content {
+        max-width: 600px;
+        margin: 0 auto;
+
+        h1 {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        p {
+            font-size: 20px;
+        }
+
+        .cta-button {
+            background-color: #ff5c5c;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    }
+}
+
+.testimonials-section {
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+
+    h2 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .testimonial-cards {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .testimonial-card {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        max-width: 300px;
+        width: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .testimonial-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border: 3px solid #ddd;
+        }
+
+        .testimonial-text {
+            p {
+                margin: 5px 0;
+                color: #555;
+            }
+        }
+    }
+}
+
+
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
