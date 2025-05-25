@@ -1,5 +1,6 @@
 import React from 'react';
 import './ProductDetails.scss';
+import { CurrencyFormat } from '../../utils';
 
 interface Props {
   title: string;
@@ -17,8 +18,8 @@ const ProductDetails: React.FC<Props> = ({ title, brand, sku, color, priceFull, 
       <p className="brand">Marca: {brand}</p>
       <p className="sku">Referencia (SKU): {sku}</p>
       <p className="color">Color: {color}</p>
-      <p className="price-full">${priceFull}</p>
-      <p className="price-discount">${priceDiscount}</p>
+      <p className="price-full">{CurrencyFormat(priceFull)}</p>
+      <p className="price-discount">{CurrencyFormat(priceDiscount)}</p>
     </div>
   );
 };

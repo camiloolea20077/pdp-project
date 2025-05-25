@@ -8,6 +8,11 @@ interface Props {
 }
 
 const SizeSelector: React.FC<Props> = ({ sizes, selectedSize, onSelectSize }) => {
+  const renderSizes = () => {
+    return sizes.map(size => (
+          <option key={size} value={size}>{size}</option>
+      ))
+  }
   return (
     <div className="size-selector">
       <label htmlFor="size-select" className="size-label">Talla:</label>
@@ -17,9 +22,7 @@ const SizeSelector: React.FC<Props> = ({ sizes, selectedSize, onSelectSize }) =>
         value={selectedSize}
         onChange={e => onSelectSize(e.target.value)}
       >
-        {sizes.map(size => (
-          <option key={size} value={size}>{size}</option>
-        ))}
+        {renderSizes()}
       </select>
     </div>
   );
